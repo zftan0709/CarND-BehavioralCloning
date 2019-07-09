@@ -1,30 +1,38 @@
-# **Behavioral Cloning** 
-
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
+# **Udacity Behavioral Cloning Project** 
 ---
-
-**Behavioral Cloning Project**
-
-The goals / steps of this project are the following:
-* Use the simulator to collect data of good driving behavior
-* Build, a convolution neural network in Keras that predicts steering angles from images
-* Train and validate the model with a training and validation set
-* Test that the model successfully drives around track one without leaving the road
-* Summarize the results with a written report
-
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
+[image1]: ./README_image/simulator.jpg "Simulator"
 [image2]: ./examples/placeholder.png "Grayscaling"
 [image3]: ./examples/placeholder_small.png "Recovery Image"
 [image4]: ./examples/placeholder_small.png "Recovery Image"
 [image5]: ./examples/placeholder_small.png "Recovery Image"
 [image6]: ./examples/placeholder_small.png "Normal Image"
 [image7]: ./examples/placeholder_small.png "Flipped Image"
+
+## Introduction
+
+_**Note:** This project makes use of  [Udacity Driving Simulator](https://github.com/udacity/self-driving-car-sim) and Udacity Workspace. The simulator does not include in this repository and can be found in the link above._
+
+The main objectives of this project are:
+* Use the simulator to collect data of good driving behavior
+* Build, a convolution neural network in Keras that predicts steering angles from images
+* Train and validate the model with a training and validation set
+* Test that the model successfully drives around track one without leaving the road
+
+In this project, deep learning techniques are applied to teach a car to drive autonomously in a simulated driving application. 
+The provided [Udacity Driving Simulator](https://github.com/udacity/self-driving-car-sim) has two tracks included and is able to switch between training mode and autonomous mode.
+In the training mode, users are able to collect driving data in the form of simulated car dashboard camera images, steering angle, throttle, brake, and speed.
+In each sampling point, three images are collected from the dashboard cameras which are situated at the left, center, and right side of the car.
+
+These collected data are then fed into neural networks to output the correct steering angle of the car. 
+Once the training is done, the neural network model is saved as `model.h5`. 
+The command `python drive.py model.h5` is then ran to test the model in autonomous mode.
+
+
+![alt text][image1]
+
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -98,7 +106,8 @@ The final model architecture (model.py lines 18-24) consisted of a convolution n
 
 Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
 
-![alt text][image1]
+
+
 
 #### 3. Creation of the Training Set & Training Process
 
