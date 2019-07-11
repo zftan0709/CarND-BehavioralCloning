@@ -5,11 +5,13 @@
 
 [image1]: ./README_image/simulator.jpg "Simulator"
 [image2]: ./README_image/cnn-architecture.png "NVIDIA CNN Architecture"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image3]: ./README_image/original.jpg "Original Image"
+[image4]: ./README_image/flipped.jpg "Flipped Image"
+[image5]: ./README_image/left.jpg "Left Image"
+[image6]: ./README_image/center.jpg "Center Image"
+[image7]: ./README_image/right.jpg "Right Image"
+[image8]: ./README_image/run1.jpg "Final Video"
+[video1]: ./run1.avi "Final Video"
 
 ## Introduction
 
@@ -48,6 +50,7 @@ The first layer `lambda_1` normalize the input data to value between -0.5 and 0.
 value range and learn at a faster rate.
 In order to steer the car in the right direction, the model only need useful information such as the lane line. Therefore, the upper and lower part
 of the input image which consists of trees, hills, sky, and car hood should be removed. The `cropping2d_1` layer crops the images to the desired shape.
+Additional dropout layer is added after the final convolutional layer to prevent the model from overfitting.
 ```
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
@@ -65,6 +68,8 @@ _________________________________________________________________
 conv2d_4 (Conv2D)            (None, 6, 35, 64)         27712     
 _________________________________________________________________
 conv2d_5 (Conv2D)            (None, 4, 33, 64)         36928     
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 4, 33, 64)         0         
 _________________________________________________________________
 flatten_1 (Flatten)          (None, 8448)              0         
 _________________________________________________________________
@@ -88,115 +93,43 @@ using the provided simulator. There are two control methods to steer the car in 
 or using mouse. Using mouse to steer the car could produce better data than using the keyboard. However, it is extremely difficult to control
 the car using mouse, let alone running it on the challenging track. Hence, only the provided data is used in this project.
 
+![alt text][image3]
+![alt text][image4]
+
+_Original Image & Flipped Image_
+
 To generate more dataset for the model, the left and right dashboard camera images are also used to train the network.
-The steering angle for both left and right images are adjusted by +0.2 for the left frame and -0.2 for the right frame.
+The steering angle for both left and right images are adjusted by +0.2 for the left frame and -0.15 for the right frame.
 Next, for every single image read from the dataset, the image is flipped and the steering angle is mutiplied by -1 to 
 mirror the original image.
+
+![alt text][image5]
+![alt text][image6]
+![alt text][image7]
+
+_Left, Center, and Right Dashboard Camera Images_
 
 Neural network require large amount of data to produce better model. Therefore, using multiple camera and flipped images allow
 the model to learn faster. It's easy for human to understand how to drive, even with a non-ideal control method such as using the keyboard
 to steer the car. However, it is difficult for neural network to grasp the semantic definition of driving without optimal data.
-In whole, a model can only do as best as the data provided. The model will need driving data using a steering wheel to drive like a real driver.
+In whole, a model can only do as best as the data provided. For instance, the model will need driving data using a steering wheel to drive like a real driver.
 
-## Rubric Points
-### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
+## Model Fine-Tuning
 
----
-### Files Submitted & Code Quality
+Through multiple attempts, adding dropout layers does not increase accuracy within 5 epochs. Several attempts of adding dropout layer between different layers have been made, but 
+training the model at a larger epoch of 10 with a single dropout layer after the final convolutional layer does reduce the loss greatly and prevent overfitting.
+Before training the model, the dataset is shuffled and split into 80% training data and 20% validation data. Note that testing data is not generated for this project as the final testing step 
+is to let the model drive the car autonomously in the driving simulator.
 
-#### 1. Submission includes all required files and can be used to run the simulator in autonomous mode
+The learning rate of the model was not tuned manually as the Adam optimizer is chosen for the model. Adam is a gradient descent optimization algorithm which will change the learning 
+rate in between training progress to reduce loss.
 
-My project includes the following files:
-* model.py containing the script to create and train the model
-* drive.py for driving the car in autonomous mode
-* model.h5 containing a trained convolution neural network 
-* writeup_report.md or writeup_report.pdf summarizing the results
+## Result and Conclusion
 
-#### 2. Submission includes functional code
-Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
-```sh
-python drive.py model.h5
-```
+The final model was able to drive the car without leaving the track or rolling over any surfaces. This project, again emphasize on importance of input data in deep learning. 
+I have tried collecting data multiple times, but was unable to produce a satisfactory sets of data. Making changes in parameters have little to none effect on the model whereas 
+feeding quality data greatly improves the car performance.
 
-#### 3. Submission code is usable and readable
-
-The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
-
-### Model Architecture and Training Strategy
-
-#### 1. An appropriate model architecture has been employed
-
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
-
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
-
-#### 2. Attempts to reduce overfitting in the model
-
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
-
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
-
-#### 3. Model parameter tuning
-
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
-
-#### 4. Appropriate training data
-
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
-
-For details about how I created the training data, see the next section. 
-
-### Model Architecture and Training Strategy
-
-#### 1. Solution Design Approach
-
-The overall strategy for deriving a model architecture was to ...
-
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
-
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
-
-To combat the overfitting, I modified the model so that ...
-
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
-
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
-
-#### 2. Final Model Architecture
-
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
-
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
-
-
-
-
-#### 3. Creation of the Training Set & Training Process
-
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
-
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I enjoyed working on this project, from building the network to driving the car autonomously. It sure is rewarding to be able to see the car driving around the track smoothly. 
+I hope to revisit this project in the future if time permits. I believe driving the car in training mode with a racing wheel will generate great data as it simulates real driving situation.
+Another way to improve the model is to implement smaller or stronger neural network to reduce training time and improve performance.
