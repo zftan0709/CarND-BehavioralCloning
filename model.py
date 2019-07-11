@@ -71,9 +71,9 @@ model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
 print(model.summary())
-#model.compile(loss='mse',optimizer='adam')
-#history_object = model.fit_generator(train_generator, steps_per_epoch=np.ceil(2*len(X_train_path)/batch_size), 
-#            validation_data=validation_generator, 
-#            validation_steps=np.ceil(2*len(X_valid_path)/batch_size), 
-#            epochs=10, verbose=1)
-#model.save('./model.h5')
+model.compile(loss='mse',optimizer='adam')
+history_object = model.fit_generator(train_generator, steps_per_epoch=np.ceil(2*len(X_train_path)/batch_size), 
+            validation_data=validation_generator, 
+            validation_steps=np.ceil(2*len(X_valid_path)/batch_size), 
+            epochs=10, verbose=1)
+model.save('./model.h5')
