@@ -2,7 +2,7 @@ import csv
 import cv2
 import math
 import numpy as np
-import matplotlib.pyplot as plt
+
 from keras.models import Sequential
 from keras.layers import Cropping2D, Flatten, Dropout, Dense, Lambda, Conv2D
 from sklearn.model_selection import train_test_split
@@ -14,7 +14,7 @@ steering_angle = []
 with open('./data/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     # Steering angle correction for left and right camera images
-    correction = 0.2
+    correction = 0.25
     first_row = next(reader)
     for line in reader:
         # Center Camera Image and Angle
@@ -64,16 +64,18 @@ model.add(Conv2D(filters=36,kernel_size=(5,5),strides=(2,2),activation="relu"))
 model.add(Conv2D(filters=48,kernel_size=(5,5),strides=(2,2),activation="relu"))
 model.add(Conv2D(filters=64,kernel_size=(3,3),activation="relu"))
 model.add(Conv2D(filters=64,kernel_size=(3,3),activation="relu"))
-model.add(Dropout(0.5))
 model.add(Flatten())
+model.add(Dropout(0.5))
 model.add(Dense(100))
+model.add(Dropout(0.5))
 model.add(Dense(50))
+model.add(Dropout(0.5))
 model.add(Dense(10))
 model.add(Dense(1))
 print(model.summary())
 model.compile(loss='mse',optimizer='adam')
 history_object = model.fit_generator(train_generator, steps_per_epoch=np.ceil(2*len(X_train_path)/batch_size), 
             validation_data=validation_generator, 
-            validation_steps=np.ceil(2*len(X_valid_path)/batch_size), 
-            epochs=10, verbose=1)
+           validation_steps=np.ceil(2*len(X_valid_path)/batch_size), 
+            epochs=20, verbose=1)
 model.save('./model.h5')

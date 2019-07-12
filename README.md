@@ -50,7 +50,7 @@ The first layer `lambda_1` normalize the input data to value between -0.5 and 0.
 value range and learn at a faster rate.
 In order to steer the car in the right direction, the model only need useful information such as the lane line. Therefore, the upper and lower part
 of the input image which consists of trees, hills, sky, and car hood should be removed. The `cropping2d_1` layer crops the images to the desired shape.
-Additional dropout layer is added after the final convolutional layer to prevent the model from overfitting.
+Additional dropout layers are added after the final convolutional layer to prevent the model from overfitting.
 ```
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #   
@@ -69,13 +69,17 @@ conv2d_4 (Conv2D)            (None, 6, 35, 64)         27712
 _________________________________________________________________
 conv2d_5 (Conv2D)            (None, 4, 33, 64)         36928     
 _________________________________________________________________
-dropout_1 (Dropout)          (None, 4, 33, 64)         0         
-_________________________________________________________________
 flatten_1 (Flatten)          (None, 8448)              0         
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 8448)              0         
 _________________________________________________________________
 dense_1 (Dense)              (None, 100)               844900    
 _________________________________________________________________
+dropout_2 (Dropout)          (None, 100)               0         
+_________________________________________________________________
 dense_2 (Dense)              (None, 50)                5050      
+_________________________________________________________________
+dropout_3 (Dropout)          (None, 50)                0         
 _________________________________________________________________
 dense_3 (Dense)              (None, 10)                510       
 _________________________________________________________________
@@ -99,7 +103,7 @@ the car using mouse, let alone running it on the challenging track. Hence, only 
 _Original Image & Flipped Image_
 
 To generate more dataset for the model, the left and right dashboard camera images are also used to train the network.
-The steering angle for both left and right images are adjusted by +0.2 for the left frame and -0.15 for the right frame.
+The steering angle for both left and right images are adjusted by +0.25 for the left frame and -0.25 for the right frame.
 Next, for every single image read from the dataset, the image is flipped and the steering angle is mutiplied by -1 to 
 mirror the original image.
 
